@@ -5,6 +5,7 @@ dist
 tmp
 /out-tsc
 .venv
+__pycache__
 # dependencies
 node_modules
 
