@@ -7,9 +7,9 @@ interface SurvivorProfileProps {
   showInfectionReport?: boolean;
 }
 
-export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({ 
+export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
   survivor,
-  showInfectionReport = false
+  showInfectionReport = false,
 }) => {
   return (
     <div className="bg-white shadow rounded-lg p-6">
@@ -31,7 +31,9 @@ export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
           </div>
           <div className="bg-gray-50 p-3 rounded-lg">
             <h4 className="font-medium text-gray-600">Gender</h4>
-            <p className="text-lg font-bold text-gray-900 capitalize">{survivor.gender}</p>
+            <p className="text-lg font-bold text-gray-900 capitalize">
+              {survivor.gender}
+            </p>
           </div>
           <div className="bg-gray-50 p-3 rounded-lg">
             <h4 className="font-medium text-gray-600">Location</h4>
@@ -41,13 +43,19 @@ export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
           </div>
           <div className="bg-gray-50 p-3 rounded-lg">
             <h4 className="font-medium text-gray-600">Status</h4>
-            <p className={`text-lg font-bold ${survivor.infected ? 'text-red-600' : 'text-green-600'}`}>
+            <p
+              className={`text-lg font-bold ${
+                survivor.infected ? 'text-red-600' : 'text-green-600'
+              }`}
+            >
               {survivor.infected ? 'Infected' : 'Healthy'}
             </p>
           </div>
         </div>
         <div className="bg-gray-50 p-4 rounded-lg hover:bg-gray-100 transition-colors">
-          <h3 className="font-medium text-gray-600 capitalize">Infection Reports</h3>
+          <h3 className="font-medium text-gray-600 capitalize">
+            Infection Reports
+          </h3>
           <p className="text-2xl font-bold text-gray-900">
             {survivor.reporters?.length || 0}
             <span className="text-lg text-gray-600"> / 3</span>
@@ -67,4 +75,4 @@ export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
       </div>
     </div>
   );
-}; 
+};

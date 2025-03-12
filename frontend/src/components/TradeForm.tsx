@@ -21,10 +21,14 @@ const calculatePoints = (inventory: IInventory): number => {
   );
 };
 
-export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
+export const TradeForm: React.FC<{ onSuccess: () => void }> = ({
+  onSuccess,
+}) => {
   const queryClient = useQueryClient();
   const { user, refreshUser } = useUser();
-  const [selectedSurvivor, setSelectedSurvivor] = useState<ISurvivor | null>(null);
+  const [selectedSurvivor, setSelectedSurvivor] = useState<ISurvivor | null>(
+    null
+  );
   const [myOffer, setMyOffer] = useState<IInventory>(emptyInventory);
   const [theirOffer, setTheirOffer] = useState<IInventory>(emptyInventory);
   const [error, setError] = useState('');
@@ -32,7 +36,8 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) =>
   const { data: availableSurvivors = [] } = useQuery({
     queryKey: ['survivors'],
     queryFn: api.getAllSurvivors,
-    select: (survivors: ISurvivor[]) => survivors.filter((s: ISurvivor) => s.id !== user?.id && !s.infected),
+    select: (survivors: ISurvivor[]) =>
+      survivors.filter((s: ISurvivor) => s.id !== user?.id && !s.infected),
     enabled: !!user,
   });
 
@@ -52,7 +57,9 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) =>
   });
 
   const handleSurvivorSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = availableSurvivors.find(s => s.id === Number(e.target.value));
+    const selected = availableSurvivors.find(
+      (s) => s.id === Number(e.target.value)
+    );
     setSelectedSurvivor(selected || null);
     setTheirOffer(emptyInventory);
   };
@@ -62,15 +69,15 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) =>
     inventory: IInventory,
     item: keyof IInventory,
     value: number
-  ) => {    
+  ) => {
     if (!inventory || typeof inventory[item] !== 'number') return;
-    
+
     const maxValue = inventory[item] as number;
     const validValue = Math.min(Math.max(0, value), maxValue);
 
-    setValue(prev => ({
+    setValue((prev) => ({
       ...prev,
-      [item]: validValue
+      [item]: validValue,
     }));
   };
 
@@ -89,12 +96,12 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) =>
     tradeMutation.mutate({
       trader1: {
         survivor_id: user.id,
-        items: myOffer
+        items: myOffer,
       },
       trader2: {
         survivor_id: selectedSurvivor.id,
-        items: theirOffer
-      }
+        items: theirOffer,
+      },
     });
   };
 
@@ -124,16 +131,27 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) =>
 
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <h3 className="font-semibold mb-2">Your Offer (Points: {myPoints})</h3>
+            <h3 className="font-semibold mb-2">
+              Your Offer (Points: {myPoints})
+            </h3>
             <div className="space-y-2">
               {Object.entries(user.inventory).map(([item, quantity]) => (
                 <div key={item}>
-                  <Label>{item} (Available: {quantity})</Label>
+                  <Label>
+                    {item} (Available: {quantity})
+                  </Label>
                   <input
                     id={`my-${item}`}
                     type="number"
                     value={myOffer[item as keyof IInventory]}
-                    onChange={(e) => handleOfferChange(setMyOffer, user.inventory, item as keyof IInventory, Number(e.target.value))}
+                    onChange={(e) =>
+                      handleOfferChange(
+                        setMyOffer,
+                        user.inventory,
+                        item as keyof IInventory,
+                        Number(e.target.value)
+                      )
+                    }
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     min="0"
                     max={quantity}
@@ -145,36 +163,53 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) =>
 
           {selectedSurvivor && (
             <div>
-              <h3 className="font-semibold mb-2">Their Offer (Points: {theirPoints})</h3>
+              <h3 className="font-semibold mb-2">
+                Their Offer (Points: {theirPoints})
+              </h3>
               <div className="space-y-2">
-                {Object.entries(selectedSurvivor.inventory).map(([item, quantity]) => (
-                  <div key={item}>
-                    <Label>{item} (Available: {quantity})</Label>
-                    <input
-                      id={`their-${item}`}
-                      type="number"
-                      value={theirOffer[item as keyof IInventory]}
-                      onChange={(e) => handleOfferChange(setTheirOffer, selectedSurvivor.inventory, item as keyof IInventory, Number(e.target.value))}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      min="0"
-                      max={quantity}
-                    />
-                  </div>
-                ))}
+                {Object.entries(selectedSurvivor.inventory).map(
+                  ([item, quantity]) => (
+                    <div key={item}>
+                      <Label>
+                        {item} (Available: {quantity})
+                      </Label>
+                      <input
+                        id={`their-${item}`}
+                        type="number"
+                        value={theirOffer[item as keyof IInventory]}
+                        onChange={(e) =>
+                          handleOfferChange(
+                            setTheirOffer,
+                            selectedSurvivor.inventory,
+                            item as keyof IInventory,
+                            Number(e.target.value)
+                          )
+                        }
+                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        min="0"
+                        max={quantity}
+                      />
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}
         </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        
+
         <Button
           type="submit"
-          disabled={!selectedSurvivor || tradeMutation.isPending || myPoints !== theirPoints}
+          disabled={
+            !selectedSurvivor ||
+            tradeMutation.isPending ||
+            myPoints !== theirPoints
+          }
         >
           {tradeMutation.isPending ? 'Trading...' : 'Execute Trade'}
         </Button>
       </form>
     </Card>
   );
-}; 
+};

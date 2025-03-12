@@ -4,12 +4,12 @@ import { useUser } from '../contexts/UserContext';
 import { Gender, IInventory } from '../types/types';
 
 interface ISurvivorForm {
-  name: string,
-  age: number,
-  gender: Gender,
-  latitude: number,
-  longitude: number,
-  inventory: IInventory,
+  name: string;
+  age: number;
+  gender: Gender;
+  latitude: number;
+  longitude: number;
+  inventory: IInventory;
 }
 
 const survivor = {
@@ -31,23 +31,25 @@ export const RegisterForm: React.FC = () => {
   const [error, setError] = useState('');
   const { setUserId } = useUser();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
       if (parent === 'inventory') {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           inventory: {
             ...prev.inventory,
-            [child]: Number(value)
-          }
+            [child]: Number(value),
+          },
         }));
       }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: name === 'age' ? Number(value) : value
+        [name]: name === 'age' ? Number(value) : value,
       }));
     }
   };

@@ -31,7 +31,7 @@ const AppContent: React.FC = () => {
             {!showRegister ? (
               <>
                 <LoginForm />
-                <Button 
+                <Button
                   onClick={() => setShowRegister(true)}
                   className="mt-4 w-full"
                 >
@@ -41,7 +41,7 @@ const AppContent: React.FC = () => {
             ) : (
               <>
                 <RegisterForm />
-                <Button 
+                <Button
                   onClick={() => setShowRegister(false)}
                   className="mt-4 w-full"
                 >
@@ -60,7 +60,9 @@ const AppContent: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Welcome, {user.name}!</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Welcome, {user.name}!
+            </h1>
             <p className="text-sm text-gray-500">
               Status: {user.infected ? 'Infected' : 'Healthy'}
             </p>
@@ -78,7 +80,10 @@ const AppContent: React.FC = () => {
           ) : (
             <>
               <TradeForm onSuccess={() => setShowTrade(false)} />
-              <Button onClick={() => setShowTrade(false)} className="mt-4 w-full">
+              <Button
+                onClick={() => setShowTrade(false)}
+                className="mt-4 w-full"
+              >
                 Cancel Trade
               </Button>
             </>

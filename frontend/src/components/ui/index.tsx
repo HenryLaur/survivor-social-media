@@ -14,7 +14,8 @@ export const Button: React.FC<IButtonProps> = ({
   const baseStyles = 'px-4 py-2 rounded font-medium transition-colors';
   const variantStyles = {
     default: 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-blue-300',
-    outline: 'border border-blue-500 text-blue-500 hover:bg-blue-50 disabled:border-blue-300 disabled:text-blue-300'
+    outline:
+      'border border-blue-500 text-blue-500 hover:bg-blue-50 disabled:border-blue-300 disabled:text-blue-300',
   };
 
   return (
@@ -48,10 +49,7 @@ interface ILabelProps {
   className?: string;
 }
 
-export const Label: React.FC<ILabelProps> = ({
-  children,
-  className = ''
-}) => {
+export const Label: React.FC<ILabelProps> = ({ children, className = '' }) => {
   return (
     <label
       className={`block text-sm font-medium text-gray-700 mb-1 ${className}`}
@@ -78,4 +76,4 @@ export const Select: React.FC<ISelectProps> = ({
       {children}
     </select>
   );
-}; 
+};

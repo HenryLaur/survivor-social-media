@@ -9,7 +9,9 @@ interface IInfectionReportProps {
   survivor: ISurvivor;
 }
 
-export const InfectionReport: React.FC<IInfectionReportProps> = ({ survivor }) => {
+export const InfectionReport: React.FC<IInfectionReportProps> = ({
+  survivor,
+}) => {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const reportMutation = useMutation({
@@ -21,12 +23,18 @@ export const InfectionReport: React.FC<IInfectionReportProps> = ({ survivor }) =
       queryClient.invalidateQueries({ queryKey: ['survivors'] });
     },
   });
-  if (!user || user.id === survivor.id || survivor.infected || survivor.reporters?.length >= 3 || survivor.reporters?.some(reporterId => reporterId === user.id)) {
+  if (
+    !user ||
+    user.id === survivor.id ||
+    survivor.infected ||
+    survivor.reporters?.length >= 3 ||
+    survivor.reporters?.some((reporterId) => reporterId === user.id)
+  ) {
     return null;
   }
 
   const hasReported = survivor.reporters?.some(
-    reporterId => reporterId === user.id
+    (reporterId) => reporterId === user.id
   );
   return (
     <div className="mt-2">
@@ -35,11 +43,11 @@ export const InfectionReport: React.FC<IInfectionReportProps> = ({ survivor }) =
         onClick={() => reportMutation.mutate()}
         className="bg-red-500 hover:bg-red-600 text-white"
       >
-        {hasReported 
-          ? 'Already Reported' 
-          : reportMutation.isPending 
-            ? 'Reporting...' 
-            : 'Report as Infected'}
+        {hasReported
+          ? 'Already Reported'
+          : reportMutation.isPending
+          ? 'Reporting...'
+          : 'Report as Infected'}
       </Button>
       {survivor.reporters && (
         <p className="text-sm text-gray-600 mt-1">
@@ -48,4 +56,4 @@ export const InfectionReport: React.FC<IInfectionReportProps> = ({ survivor }) =
       )}
     </div>
   );
-}; 
+};

@@ -20,7 +20,7 @@ export interface IItem {
 export enum Gender {
   male = 'male',
   female = 'female',
-  other = 'other'
+  other = 'other',
 }
 
 export interface IInventory {

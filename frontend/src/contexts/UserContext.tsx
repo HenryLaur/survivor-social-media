@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ISurvivor } from '../types/types';
 import { api } from '../api/client';
@@ -12,7 +18,9 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<number | null>(() => {
     const savedId = localStorage.getItem('userId');
@@ -24,7 +32,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     queryFn: () => (userId ? api.getSurvivor(userId) : null),
     enabled: !!userId,
   });
-  
+
   const refreshUser = useCallback(async () => {
     if (userId) {
       await queryClient.invalidateQueries({ queryKey: ['user', userId] });
@@ -40,14 +48,15 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [userId, refreshUser]);
 
-
   const logout = () => {
     setUserId(null);
     queryClient.removeQueries({ queryKey: ['user'] });
   };
 
   return (
-    <UserContext.Provider value={{ user: user || null, setUserId, refreshUser, logout }}>
+    <UserContext.Provider
+      value={{ user: user || null, setUserId, refreshUser, logout }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -59,4 +68,4 @@ export const useUser = () => {
     throw new Error('useUser must be used within a UserProvider');
   }
   return context;
-}; 
+};

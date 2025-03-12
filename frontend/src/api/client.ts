@@ -28,7 +28,10 @@ export const api = {
     const { data } = await apiClient.post('/survivors/', survivor);
     return data;
   },
-  updateLocation: async (id: number, location: { latitude: number; longitude: number }) => {
+  updateLocation: async (
+    id: number,
+    location: { latitude: number; longitude: number }
+  ) => {
     const { data } = await apiClient.put(`/survivors/${id}/location`, location);
     return data;
   },
@@ -38,13 +41,19 @@ export const api = {
     return data;
   },
   // Infection Reports
-  reportInfection: async (reporterId: number, reportedId: number): Promise<void> => {
-    const response = await apiClient.post(`${API_BASE_URL}/survivors/${reportedId}/report`, {
-      body: { reporter_id: reporterId },
-    });
+  reportInfection: async (
+    reporterId: number,
+    reportedId: number
+  ): Promise<void> => {
+    const response = await apiClient.post(
+      `${API_BASE_URL}/survivors/${reportedId}/report`,
+      {
+        body: { reporter_id: reporterId },
+      }
+    );
 
     if (response.status !== 200) {
       throw new Error(response.data.detail || 'Failed to report infection');
     }
   },
-}; 
+};

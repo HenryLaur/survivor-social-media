@@ -7,17 +7,27 @@ import { SurvivorProfile } from './SurvivorProfile';
 
 export const SurvivorList: React.FC = () => {
   const { user } = useUser();
-  const { data: survivors = [], isLoading, error } = useQuery({
+  const {
+    data: survivors = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['survivors'],
     queryFn: api.getAllSurvivors,
   });
 
   if (isLoading) {
-    return <div className="text-center text-gray-600">Loading survivors...</div>;
+    return (
+      <div className="text-center text-gray-600">Loading survivors...</div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-red-600">Error loading survivors: {error.message}</div>;
+    return (
+      <div className="text-center text-red-600">
+        Error loading survivors: {error.message}
+      </div>
+    );
   }
 
   const otherSurvivors = survivors.filter((s: ISurvivor) => s.id !== user?.id);
@@ -27,8 +37,8 @@ export const SurvivorList: React.FC = () => {
       <h2 className="text-2xl font-bold text-gray-900">Other Survivors</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {otherSurvivors.map((survivor: ISurvivor) => (
-          <SurvivorProfile 
-            key={survivor.id} 
+          <SurvivorProfile
+            key={survivor.id}
             survivor={survivor}
             showInfectionReport={true}
           />
