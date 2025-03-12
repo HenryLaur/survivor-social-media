@@ -1,8 +1,20 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, declarative_base, relationship
-from sqlalchemy import Column, Integer, String, Float, Boolean, Enum, ForeignKey, Table, select
 import enum
 from typing import AsyncGenerator
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    select,
+)
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+
 from models import Gender
 
 DATABASE_URL = "sqlite+aiosqlite:///./zssn.db"
@@ -12,11 +24,12 @@ AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=F
 Base = declarative_base()
 
 infection_reports = Table(
-    'infection_reports',
+    "infection_reports",
     Base.metadata,
-    Column('reporter_id', Integer, ForeignKey('survivors.id'), primary_key=True),
-    Column('reported_id', Integer, ForeignKey('survivors.id'), primary_key=True)
+    Column("reporter_id", Integer, ForeignKey("survivors.id"), primary_key=True),
+    Column("reported_id", Integer, ForeignKey("survivors.id"), primary_key=True),
 )
+
 
 class ItemType(str, enum.Enum):
     water = "water"
@@ -26,21 +39,18 @@ class ItemType(str, enum.Enum):
 
     @property
     def points(self) -> int:
-        points_map = {
-            "water": 4,
-            "food": 3,
-            "medication": 2,
-            "ammunition": 1
-        }
+        points_map = {"water": 4, "food": 3, "medication": 2, "ammunition": 1}
         return points_map[self.value]
 
+
 survivor_items = Table(
-    'survivor_items',
+    "survivor_items",
     Base.metadata,
-    Column('survivor_id', Integer, ForeignKey('survivors.id'), primary_key=True),
-    Column('item_id', Integer, ForeignKey('items.id'), primary_key=True),
-    Column('quantity', Integer, nullable=False, default=0)
+    Column("survivor_id", Integer, ForeignKey("survivors.id"), primary_key=True),
+    Column("item_id", Integer, ForeignKey("items.id"), primary_key=True),
+    Column("quantity", Integer, nullable=False, default=0),
 )
+
 
 class ItemModel(Base):
     __tablename__ = "items"
@@ -49,10 +59,9 @@ class ItemModel(Base):
     name = Column(Enum(ItemType), unique=True)
     points = Column(Integer, nullable=False)
     survivors = relationship(
-        "SurvivorModel",
-        secondary=survivor_items,
-        back_populates="items"
+        "SurvivorModel", secondary=survivor_items, back_populates="items"
     )
+
 
 class SurvivorModel(Base):
     __tablename__ = "survivors"
@@ -65,17 +74,16 @@ class SurvivorModel(Base):
     longitude = Column(Float)
     infected = Column(Boolean, default=False)
     items = relationship(
-        "ItemModel",
-        secondary=survivor_items,
-        back_populates="survivors"
+        "ItemModel", secondary=survivor_items, back_populates="survivors"
     )
     reporters = relationship(
         "SurvivorModel",
         secondary=infection_reports,
         primaryjoin=(id == infection_reports.c.reported_id),
         secondaryjoin=(id == infection_reports.c.reporter_id),
-        backref="reported_survivors"
+        backref="reported_survivors",
     )
+
 
 async def init_db():
     async with engine.begin() as conn:
@@ -86,7 +94,7 @@ async def init_db():
                 ItemModel(name=ItemType.water, points=4),
                 ItemModel(name=ItemType.food, points=3),
                 ItemModel(name=ItemType.medication, points=2),
-                ItemModel(name=ItemType.ammunition, points=1)
+                ItemModel(name=ItemType.ammunition, points=1),
             ]
             for item in items:
                 existing_item = await session.execute(
@@ -96,6 +104,7 @@ async def init_db():
                     session.add(item)
             await session.commit()
 
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
-        yield session 
+        yield session
