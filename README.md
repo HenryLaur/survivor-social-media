@@ -10,6 +10,23 @@ A post-apocalyptic social network for survivors to trade resources and report in
 - Trade resources with other survivors
 - View survivor statistics
 
+## Pictures
+
+![Login Screen](/pics/login.JPG)
+*Login screen for survivors to access the network*
+
+![Register Screen](/pics/register.JPG)
+*Registration form for new survivors to join*
+
+![Survivor Profile](/pics/profile.JPG)
+*Survivor profile showing inventory and infection status*
+
+![Trade Screen](/pics/trade.JPG)
+*Trading interface for exchanging resources with other survivors*
+
+![Survivors Screen](/pics/survivors.JPG)
+*Interface for seeing and being able to report other survivors*
+
 ## Tech Stack
 
 ### Frontend
