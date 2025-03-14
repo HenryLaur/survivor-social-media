@@ -1,16 +1,19 @@
-from service.infection.infection_service import report_infection
-from service.inventory.inventory_service import (
+"""
+ZSSN API service package
+"""
+from api.service.infection.infection_service import report_infection
+from api.service.inventory.inventory_service import (
     add_inventory_items,
     get_survivor_inventory,
 )
-from service.survivors.survivor_service import (
+from api.service.survivors.survivor_service import (
     create_survivor,
     get_all_survivors,
     get_survivor_by_id,
     get_survivor_by_name,
     update_location,
 )
-from service.trading.trading_service import trade_items
+from api.service.trading.trading_service import trade_items
 
 __all__ = [
     "create_survivor",

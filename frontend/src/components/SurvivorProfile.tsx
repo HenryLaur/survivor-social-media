@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ISurvivor } from '../types/types';
-import { InfectionReport } from './InfectionReport';
+import { InfectionReportButton } from './InfectionReportButton';
+import { Button } from './ui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '../api/client';
+import { useUser } from '../contexts/UserContext';
 
 interface SurvivorProfileProps {
   survivor: ISurvivor;
@@ -11,6 +15,21 @@ export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
   survivor,
   showInfectionReport = false,
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [latitude, setLatitude] = useState(survivor.latitude);
+  const [longitude, setLongitude] = useState(survivor.longitude);
+  const { user } = useUser();
+  const queryClient = useQueryClient();
+
+  const updateLocation = useMutation({
+    mutationFn: () => api.updateLocation(survivor.id, { latitude, longitude }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', survivor.id] });
+      queryClient.invalidateQueries({ queryKey: ['survivors'] });
+      setIsEditing(false);
+    },
+  });
+
   return (
     <div className="bg-white shadow rounded-lg p-6">
       <div className="space-y-4 w-full">
@@ -21,7 +40,7 @@ export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
               <span className="ml-2 text-red-600 text-sm">(Infected)</span>
             )}
           </h3>
-          {showInfectionReport && <InfectionReport survivor={survivor} />}
+          {showInfectionReport && <InfectionReportButton survivor={survivor} />}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -37,9 +56,41 @@ export const SurvivorProfile: React.FC<SurvivorProfileProps> = ({
           </div>
           <div className="bg-gray-50 p-3 rounded-lg">
             <h4 className="font-medium text-gray-600">Location</h4>
-            <p className="text-lg font-bold text-gray-900">
-              {survivor.latitude}°, {survivor.longitude}°
-            </p>
+            {isEditing ? (
+              <div className="space-y-2">
+                <input
+                  type="number"
+                  value={latitude}
+                  onChange={(e) => setLatitude(parseFloat(e.target.value))}
+                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  step="0.000001"
+                />
+                <input
+                  type="number"
+                  value={longitude}
+                  onChange={(e) => setLongitude(parseFloat(e.target.value))}
+                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  step="0.000001"
+                />
+                <div className="flex gap-2">
+                  <Button onClick={() => updateLocation.mutate()}>Save</Button>
+                  <Button onClick={() => setIsEditing(false)} variant="outline">
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-bold text-gray-900">
+                  {latitude}°, {longitude}°
+                </p>
+                {user?.id === survivor.id && (
+                  <Button onClick={() => setIsEditing(true)} variant="outline">
+                    Update
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
           <div className="bg-gray-50 p-3 rounded-lg">
             <h4 className="font-medium text-gray-600">Status</h4>

@@ -5,11 +5,11 @@ import { useUser } from '../contexts/UserContext';
 import { api } from '../api/client';
 import { ISurvivor } from '../types/types';
 
-interface IInfectionReportProps {
+interface IInfectionReportButtonProps {
   survivor: ISurvivor;
 }
 
-export const InfectionReport: React.FC<IInfectionReportProps> = ({
+export const InfectionReportButton: React.FC<IInfectionReportButtonProps> = ({
   survivor,
 }) => {
   const { user } = useUser();
@@ -27,8 +27,8 @@ export const InfectionReport: React.FC<IInfectionReportProps> = ({
     !user ||
     user.id === survivor.id ||
     survivor.infected ||
-    survivor.reporters?.length >= 3 ||
-    survivor.reporters?.some((reporterId) => reporterId === user.id)
+    user.infected ||
+    survivor.reporters?.length >= 3
   ) {
     return null;
   }

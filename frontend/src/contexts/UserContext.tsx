@@ -11,7 +11,7 @@ import { api } from '../api/client';
 
 interface UserContextType {
   user: ISurvivor | null;
-  setUserId: (id: number | null) => void;
+  setUserName: (name: string | null) => void;
   refreshUser: () => Promise<void>;
   logout: () => void;
 }
@@ -22,40 +22,40 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const queryClient = useQueryClient();
-  const [userId, setUserId] = useState<number | null>(() => {
-    const savedId = localStorage.getItem('userId');
-    return savedId ? parseInt(savedId) : null;
+  const [userName, setUserName] = useState<string | null>(() => {
+    const savedName = localStorage.getItem('userName');
+    return savedName ?? null;
   });
 
   const { data: user } = useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => (userId ? api.getSurvivor(userId) : null),
-    enabled: !!userId,
+    queryKey: ['user', userName],
+    queryFn: () => (userName ? api.getSurvivorByName(userName) : null),
+    enabled: !!userName,
   });
 
   const refreshUser = useCallback(async () => {
-    if (userId) {
-      await queryClient.invalidateQueries({ queryKey: ['user', userId] });
+    if (userName) {
+      await queryClient.invalidateQueries({ queryKey: ['user', userName] });
     }
-  }, [userId, queryClient]);
+  }, [userName, queryClient]);
 
   useEffect(() => {
-    if (userId) {
-      localStorage.setItem('userId', userId.toString());
+    if (userName) {
+      localStorage.setItem('userName', userName);
       refreshUser();
     } else {
-      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
     }
-  }, [userId, refreshUser]);
+  }, [userName, refreshUser]);
 
   const logout = () => {
-    setUserId(null);
+    setUserName(null);
     queryClient.removeQueries({ queryKey: ['user'] });
   };
 
   return (
     <UserContext.Provider
-      value={{ user: user || null, setUserId, refreshUser, logout }}
+      value={{ user: user || null, setUserName, refreshUser, logout }}
     >
       {children}
     </UserContext.Provider>

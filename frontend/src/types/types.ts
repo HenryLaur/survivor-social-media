@@ -51,3 +51,12 @@ export interface ITrade {
   trader1: ITradeItem;
   trader2: ITradeItem;
 }
+
+export interface ISurvivorForm {
+  name: string;
+  age: number;
+  gender: Gender;
+  latitude: number;
+  longitude: number;
+  inventory: IInventory;
+}

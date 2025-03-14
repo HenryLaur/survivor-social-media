@@ -31,22 +31,28 @@ const AppContent: React.FC = () => {
             {!showRegister ? (
               <>
                 <LoginForm />
-                <Button
-                  onClick={() => setShowRegister(true)}
-                  className="mt-4 w-full"
-                >
-                  Register New Survivor
-                </Button>
+                <p className="mt-4 text-center text-sm text-gray-600">
+                  Not registered yet?{' '}
+                  <button
+                    onClick={() => setShowRegister(true)}
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Create an account
+                  </button>
+                </p>
               </>
             ) : (
               <>
                 <RegisterForm />
-                <Button
-                  onClick={() => setShowRegister(false)}
-                  className="mt-4 w-full"
-                >
-                  Back to Login
-                </Button>
+                <p className="mt-4 text-center text-sm text-gray-600">
+                  Already a survivor?{' '}
+                  <button
+                    onClick={() => setShowRegister(false)}
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Login
+                  </button>
+                </p>
               </>
             )}
           </div>
@@ -72,8 +78,11 @@ const AppContent: React.FC = () => {
 
         <div className="space-y-6">
           <SurvivorProfile survivor={user} />
-
-          {!showTrade ? (
+          {user.infected ? (
+            <div className="text-red-500 text-sm">
+              You are infected. Please report to the nearest survivor.
+            </div>
+          ) : !showTrade ? (
             <Button onClick={() => setShowTrade(true)} className="w-full">
               Start a Trade
             </Button>

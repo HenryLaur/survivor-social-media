@@ -2,14 +2,20 @@ from fastapi import HTTPException
 from sqlalchemy import and_, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import SurvivorModel, infection_reports
-from models import ReportInfection
-from service.survivors.survivor_service import get_survivor_by_id
+from api.database import SurvivorModel, infection_reports
+from api.models import ReportInfection
+from api.service.survivors.survivor_service import get_survivor_by_id
 
 
 async def report_infection(
     survivor_id: int, report: ReportInfection, db: AsyncSession
 ) -> dict:
+    if survivor_id == report.reporter_id:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot report self as infected"
+        )
+
     survivor = await get_survivor_by_id(survivor_id, db)
     if not survivor:
         raise HTTPException(status_code=404, detail="Survivor not found")
@@ -59,13 +65,13 @@ async def report_infection(
                 .where(SurvivorModel.id == survivor_id)
                 .values(infected=True)
             )
-            await db.commit()  # Commit the infected status update
+            await db.commit()
             return {"message": "Survivor has been marked as infected"}
 
         return {"message": f"Infection report recorded. Total reports: {total_reports}"}
 
     except Exception as e:
-        await db.rollback()  # Rollback on error
+        await db.rollback()
         raise HTTPException(
             status_code=500,
             detail=f"Failed to report infection: {str(e)}"

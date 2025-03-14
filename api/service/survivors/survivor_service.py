@@ -5,9 +5,9 @@ from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from database import SurvivorModel
-from models import Inventory, Location, Survivor, SurvivorCreate
-from service.inventory.inventory_service import (
+from api.database import SurvivorModel
+from api.models import Inventory, Location, Survivor, SurvivorCreate
+from api.service.inventory.inventory_service import (
     add_inventory_items,
     get_survivor_inventory,
 )
@@ -32,7 +32,7 @@ async def create_survivor(survivor: SurvivorCreate, db: AsyncSession) -> Survivo
         db.add(db_survivor)
         await db.flush()
 
-        await add_inventory_items(db_survivor.id, survivor.inventory.dict(), db)
+        await add_inventory_items(db_survivor.id, survivor.inventory.model_dump(), db)
         await db.commit()
 
         return Survivor(
@@ -63,6 +63,8 @@ async def update_location(
         .where(SurvivorModel.id == survivor_id)
         .values(latitude=location.latitude, longitude=location.longitude)
     )
+
+    await db.commit()
 
     if result.rowcount == 0:
         raise HTTPException(status_code=404, detail="Survivor not found")

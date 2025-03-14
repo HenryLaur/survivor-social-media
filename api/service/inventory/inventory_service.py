@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import ItemModel, ItemType, survivor_items
+from api.database import ItemModel, ItemType, survivor_items
 
 
 async def get_survivor_inventory(survivor_id: int, db: AsyncSession) -> dict:

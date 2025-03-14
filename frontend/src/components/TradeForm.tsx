@@ -200,6 +200,7 @@ export const TradeForm: React.FC<{ onSuccess: () => void }> = ({
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <Button
+          className="w-full"
           type="submit"
           disabled={
             !selectedSurvivor ||
