@@ -120,6 +120,8 @@ Request body:
 }
 ```
 
+Rest of endpoints can be viewed in /docs
+
 ## Resource Points System
 
 Each resource has a point value:
