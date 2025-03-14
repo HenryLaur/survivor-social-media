@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Card, Label, Select } from './ui';
+import { Button, Label, Select } from './ui';
 import { useUser } from '../contexts/UserContext';
 import { Gender, ISurvivorForm } from '../types/types';
 import { api } from '../api/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState<ISurvivorForm>({
@@ -20,7 +21,8 @@ export const RegisterForm: React.FC = () => {
   });
   const [error, setError] = useState('');
   const { setUserName } = useUser();
-
+  const queryClient = useQueryClient();
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -50,6 +52,7 @@ export const RegisterForm: React.FC = () => {
 
     try {
       const survivor = await api.createSurvivor(formData);
+      queryClient.removeQueries({ queryKey: ['survivors'] });
       setUserName(survivor.name);
     } catch (err) {
       setError('Failed to create survivor. Please try again.');

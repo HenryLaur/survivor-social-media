@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Label } from './ui';
+import { Button, Label } from './ui';
 import { useUser } from '../contexts/UserContext';
 import { api } from '../api/client';
 
